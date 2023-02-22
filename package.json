@@ -1,0 +1,25 @@
+{
+  "name": "bottle_search_ts",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "watch": "tsc -w",
+    "start": "DB_HOST=localhost DB_USER=admin DB_PASSWORD=admin DB_PORT=27017 node ./dist/index.js",
+    "prettier": "prettier --write ."
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@types/cheerio": "^0.22.31",
+    "@types/cli-progress": "^3.11.0",
+    "prettier": "2.8.4",
+    "typescript": "^4.9.5"
+  },
+  "dependencies": {
+    "cheerio": "^1.0.0-rc.12",
+    "cli-progress": "^3.12.0",
+    "mongo": "^0.1.0"
+  }
+}

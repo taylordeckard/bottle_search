@@ -1,0 +1,14 @@
+version: "3.9"
+services:
+  db:
+    hostname: db
+    restart: unless-stopped
+    image: mongo:6.0.4
+    ports:
+      - 27017:27017
+    volumes:
+      - ./data:/data/db
+      - ./db:/docker-entrypoint-initdb.d
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: admin
+      MONGO_INITDB_ROOT_PASSWORD: admin
