@@ -11,7 +11,13 @@ export class Sipwhiskey extends Scraper {
   });
 
   private _formatPrice(price: string): number {
-    return Number(price.replace(/[\\n\$a-zA-Z]/g, "").trim());
+    const numString = price.replace(/[\\n\$a-zA-Z,]/g, "").trim();
+    let num = Number(numString);
+    if (isNaN(num)) {
+      console.log(`WARNING: ${numString} is NaN`);
+      num = 0;
+    }
+    return Number(num);
   }
 
   _convertTextToJson(response: string): any {
