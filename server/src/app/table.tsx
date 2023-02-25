@@ -12,7 +12,6 @@ import Paper from '@mui/material/Paper';
 import { Product } from '../types';
 import { useQueryParams } from './useQueryParams';
 
-
 export default function ProductTable({
   products,
 }: {
@@ -68,6 +67,12 @@ export default function ProductTable({
             >
               <TableCell scope="row">
                 <a href={product.link} target="__blank">{product.title}</a>
+                { product.fresh ? (
+                  <span style={{
+                    marginLeft: '10px',
+                    color: 'red',
+                  }}>fresh</span>
+                ) : '' }
               </TableCell>
               <TableCell align="right">${product.price}</TableCell>
               <TableCell align="right">{product.website}</TableCell>

@@ -7,7 +7,6 @@ import '@fontsource/roboto/700.css';
 import { theme } from './theme';
 import { ThemeProvider, CssBaseline  } from "@mui/material";
 
-
 export default function RootLayout({
   children,
 }: {

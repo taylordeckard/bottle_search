@@ -82,7 +82,12 @@ export class Scraper {
           website: d.website,
         })
         .upsert()
-        .updateOne({ $set: d });
+        .updateOne({
+          $set: d,
+          $setOnInsert: {
+            fresh: true,
+          },
+        });
     });
     return bulkOp.execute();
   }
@@ -99,6 +104,19 @@ export class Scraper {
       });
   }
 
+  _setFreshness() {
+    return this._db.client
+      .db('bottles')
+      .collection('bottles')
+      .updateMany({
+        website: this._website,
+      }, {
+        $set: {
+          fresh: false,
+        },
+      });
+  }
+
   async _setScrapeId() {
     this._scrapeId = ((await this._db.client
       .db('bottles')
@@ -111,6 +129,7 @@ export class Scraper {
 
   public async scrape(): Promise<void> {
     await this._setScrapeId();
+    await this._setFreshness();
     await this._scrapeAllPages();
     await this._storeData();
     await this._deletePreviousScrape();

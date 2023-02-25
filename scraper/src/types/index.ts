@@ -1,7 +1,8 @@
 export interface Bottle {
   link: string;
-  price: string;
+  price: number;
   scrapeId: number;
   title: string;
   website: string;
+  fresh?: boolean;
 }

@@ -10,6 +10,7 @@ const typeDefs = gql`
     price: Float
     website: String
     link: String
+    fresh: Boolean
   }
 
   enum SortDir {

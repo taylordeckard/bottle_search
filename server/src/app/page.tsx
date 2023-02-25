@@ -9,7 +9,7 @@ import Pager from './pager';
 
 export const revalidate = 0;
 
-export async function fetchData({
+async function fetchData({
   limit: limitStr = '50',
   search = "",
   skip: skipStr = '0',
@@ -30,7 +30,7 @@ export async function fetchData({
   if (isNaN(skip) || skip < 0) {
     skip = 50;
   }
-  return {
+  const result = {
     bottles: (await client.query({
       query: gql`
       query getBottles(
@@ -52,6 +52,7 @@ export async function fetchData({
           price
           link
           website
+          fresh
         }
       }
       `,
@@ -72,6 +73,7 @@ export async function fetchData({
       variables: { search },
     })).data.countBottles,
   }
+  return result;
 }
 
 export default async function Home({ searchParams }: {

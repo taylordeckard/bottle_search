@@ -49,12 +49,21 @@ export class Sharedpour extends Scraper {
     }
   }
 
+  private _formatPrice(priceStr: string) {
+    let price = Number(priceStr);
+    if (isNaN(price)) {
+      console.log(`WARNING: ${priceStr} is not a number`)
+      price = -1;
+    }
+    return price;
+  }
+
   _parseResponse(response: any): void {
     if (response) {
       response.items.forEach((product: any) => {
         this._data.push({
           link: this._buildLink(product.link),
-          price: product.price,
+          price: this._formatPrice(product.price),
           scrapeId: this._scrapeId,
           title: product.title,
           website: this._website,
