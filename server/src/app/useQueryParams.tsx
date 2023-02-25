@@ -1,0 +1,47 @@
+import { usePathname, useRouter, useSearchParams  } from 'next/navigation';
+import { startTransition, useCallback } from 'react';
+
+export interface AppQueryParams {
+  skip?: string;
+  limit?: string;
+  sortColumn?: 'title' | 'website' | 'price';
+  sortDirection?: 'asc' | 'desc';
+  search?: string;
+}
+
+export function useQueryParams () {
+  const router = useRouter();
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
+  const queryParams: AppQueryParams = {};
+  searchParams.forEach((value, key) => {
+    if (
+      ['skip', 'limit', 'sortColumn', 'sortDirection', 'search'].includes(key)
+    ) {
+      let knownKey = key as keyof AppQueryParams;
+      if (key === 'sortColumn' && ['title', 'website', 'price'].includes(value)) {
+        const knownValue = value as 'title' | 'website' | 'price';
+        queryParams.sortColumn = knownValue;
+      } else if (key === 'sortDirection' && ['asc', 'desc'].includes(value)) {
+        const knownValue = value as 'asc' | 'desc';
+        queryParams.sortDirection = knownValue;
+      } else {
+        knownKey = knownKey as 'skip' | 'limit' | 'search';
+        queryParams[knownKey] = value;
+      }
+    }
+  });
+
+  return {
+    queryParams,
+    setQueryParams: (paramsToSet: AppQueryParams) => {
+      startTransition(() => {
+        const params = new URLSearchParams(searchParams);
+        Object.entries(paramsToSet).forEach(([key, value]) => {
+          params.set(key, value);
+        });
+        router.replace(`${pathname}?${params.toString()}`)
+      });
+    }
+  }
+}

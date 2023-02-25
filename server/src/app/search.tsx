@@ -1,9 +1,10 @@
 "use client";
-import { usePathname, useRouter, useSearchParams  } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 import { startTransition, useCallback } from 'react';
 import { styled, alpha  } from '@mui/material/styles';
 import InputBase from '@mui/material/InputBase';
 import SearchIcon from '@mui/icons-material/Search';
+import { useQueryParams } from './useQueryParams';
 
 const SearchWrapper = styled('div')(({ theme }) => ({
   position: 'relative',
@@ -21,6 +22,7 @@ const SearchWrapper = styled('div')(({ theme }) => ({
     width: 'auto',
   },
 }));
+
 const SearchIconWrapper = styled('div')(({ theme }) => ({
   padding: theme.spacing(0, 2),
   height: '100%',
@@ -51,7 +53,7 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
 export default function Search () {
   const router = useRouter();
   const pathname = usePathname();
-  const queryParams = useSearchParams();
+  const { queryParams, setQueryParams } = useQueryParams();
   function debounce (func: Function) {
     let timer: ReturnType<typeof setTimeout> | null;
 	return function (...args: any) {
@@ -63,10 +65,8 @@ export default function Search () {
 	};
   }
   function handleSearch(event: React.ChangeEvent<HTMLInputElement>) {
-    startTransition(() => {
-      const params = new URLSearchParams(queryParams);
-      params.set('search', event.target.value);
-      router.replace(`${pathname}?${params.toString()}`)
+    setQueryParams({
+      search: event.target.value,
     });
   }
   const debouncedSearch = useCallback(debounce(handleSearch), []);

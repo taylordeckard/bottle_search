@@ -41,10 +41,11 @@ export class Kegnbottle extends Scraper {
     if (response) {
       response.products.forEach((product: any) => {
         this._data.push({
+          link: this._buildLink(product.handle),
+          price: product.price_min,
+          scrapeId: this._scrapeId,
           title: product.title,
           website: this._website,
-          price: product.price_min,
-          link: this._buildLink(product.handle),
         });
       });
     }

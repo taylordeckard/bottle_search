@@ -1,5 +1,5 @@
 'use client';
-import { usePathname, useRouter, useSearchParams  } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 import { startTransition, useState } from 'react';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
@@ -10,6 +10,7 @@ import TableRow from '@mui/material/TableRow';
 import TableSortLabel from '@mui/material/TableSortLabel';
 import Paper from '@mui/material/Paper';
 import { Product } from '../types';
+import { useQueryParams } from './useQueryParams';
 
 
 export default function ProductTable({
@@ -17,31 +18,20 @@ export default function ProductTable({
 }: {
   products: Product[],
 }) {
-  const queryParams = useSearchParams();
+  const { queryParams, setQueryParams } = useQueryParams();
   const pathname = usePathname();
-  let sortColumn = queryParams.get('sortColumn') ?? 'price';
-  if (!['title', 'price', 'website'].includes(sortColumn)) {
-    sortColumn = 'price';
-  }
-  let sortDirection: 'asc' | 'desc';
-  let sortDirectionStr: string = queryParams.get('sortDirection') ?? 'asc';
-  if (!['asc', 'desc'].includes(sortDirectionStr)) {
-    sortDirection = 'asc';
-  } else {
-    sortDirection = sortDirectionStr as 'asc' | 'desc';
-  }
+  let sortColumn = queryParams.sortColumn ?? 'price';
+  let sortDirection = queryParams.sortDirection ?? 'asc';
   const router = useRouter();
-  const headers = [
+  const headers: { key: 'title' | 'price' | 'website'; label: string; }[] = [
     { key: 'title', label: 'Title' },
     { key: 'price', label: 'Price' },
     { key: 'website', label: 'Website' },
   ];
-  function updateSort(col: string) {
-    startTransition(() => {
-      const params = new URLSearchParams(queryParams);
-      params.set('sortColumn', col);
-      params.set('sortDirection', sortDirection === 'asc' ? 'desc' : 'asc');
-      router.replace(`${pathname}?${params.toString()}`)
+  function updateSort(col: 'title' | 'website' | 'price') {
+    setQueryParams({
+      sortColumn: col,
+      sortDirection: sortDirection === 'asc' ? 'desc' : 'asc',
     });
   }
   return (

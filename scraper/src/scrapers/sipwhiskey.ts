@@ -36,10 +36,11 @@ export class Sipwhiskey extends Scraper {
     if (response) {
       response.forEach((product: any) => {
         this._data.push({
+          link: this._buildLink(product.handle),
+          price: product.price,
+          scrapeId: this._scrapeId,
           title: product.title,
           website: this._website,
-          price: product.price,
-          link: this._buildLink(product.handle),
         });
       });
     }

@@ -12,6 +12,7 @@ export class Scraper {
   _progress = new progress.SingleBar({}, progress.Presets.shades_classic);
   _queryParams: URLSearchParams = new URLSearchParams();
   _db: DB;
+  _scrapeId = 0;
 
   constructor(db: DB) {
     this._db = db;
@@ -85,8 +86,31 @@ export class Scraper {
     return bulkOp.execute();
   }
 
+  _deletePreviousScrape() {
+    return this._db.client
+      .db('bottles')
+      .collection('bottles')
+      .deleteMany({
+        scrapeId: {
+          $ne: this._scrapeId,
+        },
+      });
+  }
+
+  async _setScrapeId() {
+    this._scrapeId = ((await this._db.client
+      .db('bottles')
+      .collection('bottles')
+      .findOne(
+        { website: this._website },
+        { projection: { scrapeId: 1 } },
+      ))?.scrapeId ?? -1) + 1;
+  }
+
   public async scrape(): Promise<void> {
+    await this._setScrapeId();
     await this._scrapeAllPages();
     await this._storeData();
+    await this._deletePreviousScrape();
   }
 }

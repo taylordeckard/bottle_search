@@ -1,6 +1,7 @@
 export interface Bottle {
-  title: string;
-  website: string;
   link: string;
   price: string;
+  scrapeId: number;
+  title: string;
+  website: string;
 }
