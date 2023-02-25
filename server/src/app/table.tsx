@@ -61,9 +61,12 @@ export default function ProductTable({
           {products.map((product) => (
             <TableRow
               key={product._id}
-              sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
+              sx={{ 
+                '&:last-child td, &:last-child th': { border: 0 },
+                '&:hover': { background: '#220330' }
+              }}
             >
-              <TableCell component="th" scope="row">
+              <TableCell scope="row">
                 <a href={product.link} target="__blank">{product.title}</a>
               </TableCell>
               <TableCell align="right">${product.price}</TableCell>

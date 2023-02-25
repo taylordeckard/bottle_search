@@ -5,44 +5,53 @@ import client from "../apollo-client";
 import ProductTable from './table';
 import Toolbar from './toolbar';
 import Search from './search';
+import Pager from './pager';
 
 export async function fetchData({
-  limit = 20,
+  limit: limitStr = '50',
   search = "",
-  skip = 0,
+  skip: skipStr = '0',
   sortDir = "asc",
   sortKey = "price",
 }: {
-  limit?: number;
+  limit?: string;
   search?: string;
-  skip?: number;
+  skip?: string;
   sortDir?: string;
   sortKey?: string;
 } = {}) {
-  return (
-    await client.query({
+  let limit = Number(limitStr);
+  let skip = Number(skipStr);
+  if (isNaN(limit) || limit > 100 || limit < 0) {
+    limit = 50;
+  }
+  if (isNaN(skip) || skip < 0) {
+    skip = 50;
+  }
+  return {
+    bottles: (await client.query({
       query: gql`
-        query getBottles(
-          $skip: Int
-          $limit: Int
-          $search: String
-          $sortKey: String
-          $sortDir: SortDir
+      query getBottles(
+        $skip: Int
+        $limit: Int
+        $search: String
+        $sortKey: String
+        $sortDir: SortDir
+      ) {
+        bottles(
+          skip: $skip
+          limit: $limit
+          search: $search
+          sortKey: $sortKey
+          sortDir: $sortDir
         ) {
-          bottles(
-            skip: $skip
-            limit: $limit
-            search: $search
-            sortKey: $sortKey
-            sortDir: $sortDir
-          ) {
-            _id
-            title
-            price
-            link
-            website
-          }
+          _id
+          title
+          price
+          link
+          website
         }
+      }
       `,
       variables: {
         limit,
@@ -51,19 +60,30 @@ export async function fetchData({
         sortDir,
         sortKey,
       },
-    })
-  )?.data?.bottles;
+    }))?.data?.bottles,
+    count: (await client.query({
+      query: gql`
+      query countBottles($search: String) {
+        countBottles(search: $search)
+      }
+      `,
+      variables: { search },
+    })).data.countBottles,
+  }
 }
 
 export default async function Home({ searchParams }: {
   searchParams: {
+    skip: string;
+    limit: string;
     search: string;
     sortColumn?: 'title' | 'price' | 'website';
     sortDirection?: 'asc' | 'desc';
   },
 }) {
-  const products = await fetchData({
-    limit: 50,
+  const { bottles, count } = await fetchData({
+    limit: searchParams.limit,
+    skip: searchParams.skip,
     search: searchParams.search,
     sortKey: searchParams.sortColumn,
     sortDir: searchParams.sortDirection,
@@ -75,7 +95,8 @@ export default async function Home({ searchParams }: {
         <Search />
       </div>
       <div className={styles.tableContainer}>
-        <ProductTable products={products} />
+        <ProductTable products={bottles} />
+        <Pager total={count} />
       </div>
     </main>
   );

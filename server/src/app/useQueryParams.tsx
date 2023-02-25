@@ -2,8 +2,8 @@ import { usePathname, useRouter, useSearchParams  } from 'next/navigation';
 import { startTransition, useCallback } from 'react';
 
 export interface AppQueryParams {
-  skip?: string;
-  limit?: string;
+  skip?: number;
+  limit?: number;
   sortColumn?: 'title' | 'website' | 'price';
   sortDirection?: 'asc' | 'desc';
   search?: string;
@@ -25,8 +25,12 @@ export function useQueryParams () {
       } else if (key === 'sortDirection' && ['asc', 'desc'].includes(value)) {
         const knownValue = value as 'asc' | 'desc';
         queryParams.sortDirection = knownValue;
+      } else if (['skip', 'limit'].includes(key)) {
+        knownKey = knownKey as 'skip' | 'limit';
+        const num = Number(value);
+        queryParams[knownKey] = isNaN(num) ? undefined : num;
       } else {
-        knownKey = knownKey as 'skip' | 'limit' | 'search';
+        knownKey = knownKey as 'search';
         queryParams[knownKey] = value;
       }
     }

@@ -25,6 +25,7 @@ const typeDefs = gql`
       sortKey: String
       sortDir: SortDir
     ): [Bottle]
+    countBottles(search: String): Int
   }
 `;
 

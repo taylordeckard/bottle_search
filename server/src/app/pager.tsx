@@ -1,31 +1,41 @@
+"use client";
 import TablePagination from '@mui/material/TablePagination';
+import { useQueryParams } from './useQueryParams';
 
 
-export default function TablePaginationDemo() {
-  const [page, setPage] = React.useState(2);
-  const [rowsPerPage, setRowsPerPage] = React.useState(10);
-
+export default function Pagination({
+  total,
+}: {
+  total: number;
+}) {
+  const { queryParams, setQueryParams } = useQueryParams();
+  const { limit = 50, skip = 0 } = queryParams;
+  const totalPages = Math.ceil(total / limit);
+  const page =  skip / limit;
   const handleChangePage = (
     event: React.MouseEvent<HTMLButtonElement> | null,
     newPage: number,
   ) => {
-    setPage(newPage);
+    setQueryParams({
+      skip: newPage * limit,
+    })
   };
 
   const handleChangeRowsPerPage = (
     event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
   ) => {
-    setRowsPerPage(parseInt(event.target.value, 10));
-    setPage(0);
+    setQueryParams({
+      limit: Number(event.target.value),
+    })
   };
 
   return (
     <TablePagination
       component="div"
-      count={100}
+      count={total}
       page={page}
       onPageChange={handleChangePage}
-      rowsPerPage={rowsPerPage}
+      rowsPerPage={limit}
       onRowsPerPageChange={handleChangeRowsPerPage}
     />
   );
