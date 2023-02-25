@@ -7,7 +7,7 @@ import Toolbar from './toolbar';
 import Search from './search';
 import Pager from './pager';
 
-export const revalidate = 20;
+export const revalidate = 0;
 
 export async function fetchData({
   limit: limitStr = '50',
