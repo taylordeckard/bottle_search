@@ -70,6 +70,7 @@ export class Scraper {
   }
 
   _storeData() {
+    if (!this._data.length) { return; }
     const bulkOp = this._db.client
       .db("bottles")
       .collection("bottles")
@@ -91,6 +92,7 @@ export class Scraper {
       .db('bottles')
       .collection('bottles')
       .deleteMany({
+        website: this._website,
         scrapeId: {
           $ne: this._scrapeId,
         },
