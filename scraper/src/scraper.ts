@@ -13,6 +13,7 @@ export class Scraper {
   _queryParams: URLSearchParams = new URLSearchParams();
   _db: DB;
   _scrapeId = 0;
+  _pageKey = 'page';
 
   constructor(db: DB) {
     this._db = db;
@@ -21,7 +22,7 @@ export class Scraper {
   _buildUrl(page: number): string {
     const url = new URL(this._url);
     const queryParams = new URLSearchParams(this._queryParams);
-    queryParams.set("page", String(page));
+    queryParams.set(this._pageKey, String(page));
     url.search = queryParams.toString();
     return url.toString();
   }
