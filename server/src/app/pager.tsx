@@ -11,7 +11,7 @@ export default function Pagination({
   const { queryParams, setQueryParams } = useQueryParams();
   const { limit = 50, skip = 0 } = queryParams;
   const totalPages = Math.ceil(total / limit);
-  const page =  skip / limit;
+  const page =  Math.floor(skip / limit);
   const handleChangePage = (
     event: React.MouseEvent<HTMLButtonElement> | null,
     newPage: number,
