@@ -71,7 +71,7 @@ export default function ProductTable({
                   <span style={{
                     marginLeft: '10px',
                     color: 'red',
-                  }}>fresh</span>
+                  }}>new</span>
                 ) : '' }
               </TableCell>
               <TableCell align="right">${product.price}</TableCell>

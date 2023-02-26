@@ -5,9 +5,9 @@ import { Sipwhiskey } from "./sipwhiskey";
 import { Seelbachs } from './seelbachs';
 
 export const scrapers = [
-  // Kegnbottle,
-  // Saratogawine,
+  Kegnbottle,
+  Saratogawine,
   Seelbachs,
-  // Sharedpour,
-  // Sipwhiskey,
+  Sharedpour,
+  Sipwhiskey,
 ];
