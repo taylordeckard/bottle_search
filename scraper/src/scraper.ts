@@ -1,6 +1,6 @@
 import { Bottle } from "./types";
-import * as progress from "cli-progress";
 import { DB } from "./db";
+import { parentPort } from "node:worker_threads";
 
 export class Scraper {
   _data: Bottle[] = [];
@@ -9,14 +9,13 @@ export class Scraper {
   _productLinkBase = "";
   _totalPages = 0;
   _productsPerPage = 20;
-  _progress = new progress.SingleBar({}, progress.Presets.shades_classic);
   _queryParams: URLSearchParams = new URLSearchParams();
   _db: DB;
   _scrapeId = 0;
-  _pageKey = 'page';
+  _pageKey = "page";
 
-  constructor(db: DB) {
-    this._db = db;
+  constructor() {
+    this._db = new DB();
   }
 
   _buildUrl(page: number): string {
@@ -59,19 +58,23 @@ export class Scraper {
     const totalProducts = await this._getTotal();
     this._totalPages = Math.ceil(totalProducts / this._productsPerPage);
     let currentPage = 1;
-    this._progress.start(this._totalPages, 0);
     while (currentPage <= this._totalPages) {
+      parentPort?.postMessage({
+        current: currentPage,
+        scraper: this._website,
+        total: this._totalPages,
+      });
       this._parseResponse(
         this._convertTextToJson(await this._fetchUrl(currentPage))
       );
-      this._progress.update(currentPage);
       currentPage += 1;
     }
-    this._progress.stop();
   }
 
   _storeData() {
-    if (!this._data.length) { return; }
+    if (!this._data.length) {
+      return;
+    }
     const bulkOp = this._db.client
       .db("bottles")
       .collection("bottles")
@@ -95,8 +98,8 @@ export class Scraper {
 
   _deletePreviousScrape() {
     return this._db.client
-      .db('bottles')
-      .collection('bottles')
+      .db("bottles")
+      .collection("bottles")
       .deleteMany({
         website: this._website,
         scrapeId: {
@@ -107,32 +110,37 @@ export class Scraper {
 
   _setFreshness() {
     return this._db.client
-      .db('bottles')
-      .collection('bottles')
-      .updateMany({
-        website: this._website,
-      }, {
-        $set: {
-          fresh: false,
+      .db("bottles")
+      .collection("bottles")
+      .updateMany(
+        {
+          website: this._website,
         },
-      });
+        {
+          $set: {
+            fresh: false,
+          },
+        }
+      );
   }
 
   async _setScrapeId() {
-    this._scrapeId = ((await this._db.client
-      .db('bottles')
-      .collection('bottles')
-      .findOne(
-        { website: this._website },
-        { projection: { scrapeId: 1 } },
-      ))?.scrapeId ?? -1) + 1;
+    this._scrapeId =
+      ((
+        await this._db.client
+          .db("bottles")
+          .collection("bottles")
+          .findOne({ website: this._website }, { projection: { scrapeId: 1 } })
+      )?.scrapeId ?? -1) + 1;
   }
 
   public async scrape(): Promise<void> {
+    await this._db.connect();
     await this._setScrapeId();
     await this._setFreshness();
     await this._scrapeAllPages();
     await this._storeData();
     await this._deletePreviousScrape();
+    this._db.client.close();
   }
 }

@@ -25,7 +25,9 @@ export class Saratogawine extends Scraper {
     return $(".product-item")
       .map((idx, elem) => ({
         handle: $(elem).attr("href"),
-        price: this._formatPrice($(elem).find(".price-line.bottle span.price").text()),
+        price: this._formatPrice(
+          $(elem).find(".price-line.bottle span.price").text()
+        ),
         title: $(elem).find(".product-name").text(),
       }))
       .toArray();

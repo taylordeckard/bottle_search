@@ -2,14 +2,14 @@ import { Scraper } from "../scraper";
 import * as cheerio from "cheerio";
 
 export class Caskers extends Scraper {
-  _url = "https://www.caskers.com/spirits/whiskey/bourbon/"
+  _url = "https://www.caskers.com/spirits/whiskey/bourbon/";
   _website = "caskers";
   _productLinkBase = "";
   _productsPerPage = 20;
   _queryParams: URLSearchParams = new URLSearchParams({
     p: String(1),
   });
-  _pageKey = 'p';
+  _pageKey = "p";
 
   private _formatPrice(price: string): number {
     const numString = price.replace(/[\\n\$a-zA-Z,]/g, "").trim();
@@ -27,7 +27,9 @@ export class Caskers extends Scraper {
       .filter((idx, elem) => !$(elem).html()?.includes("Out of stock"))
       .map((idx, elem) => ({
         handle: $(elem).find(".product-item-link-block").attr("href"),
-        price: this._formatPrice($(elem).find(".product-item-link-block").attr("data-price") ?? ""),
+        price: this._formatPrice(
+          $(elem).find(".product-item-link-block").attr("data-price") ?? ""
+        ),
         title: $(elem).find(".product-item-link-block").attr("title"),
       }))
       .toArray();

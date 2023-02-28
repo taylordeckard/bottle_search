@@ -2,7 +2,7 @@ import { Scraper } from "../scraper";
 import * as cheerio from "cheerio";
 
 export class Sharedpour extends Scraper {
-  _url = "https://www.searchanise.com/getresults"
+  _url = "https://www.searchanise.com/getresults";
   _website = "sharedpour";
   _productLinkBase = "https://sharedpour.com";
   _productsPerPage = 20;
@@ -33,12 +33,13 @@ export class Sharedpour extends Scraper {
     output: "jsonp",
     callback: "jQuery36005970420426540526_1677297039954",
     _: String(Date.now()),
-    'restrictBy[snize_facet5]': 'In Stock',
+    "restrictBy[snize_facet5]": "In Stock",
   });
 
   _convertTextToJson(response: string): any {
-    const selection = response
-      .match(/jQuery36005970420426540526_1677297039954\((.*)\)/)?.[1];
+    const selection = response.match(
+      /jQuery36005970420426540526_1677297039954\((.*)\)/
+    )?.[1];
     if (selection) {
       try {
         return JSON.parse(selection);
@@ -52,7 +53,7 @@ export class Sharedpour extends Scraper {
   private _formatPrice(priceStr: string) {
     let price = Number(priceStr);
     if (isNaN(price)) {
-      console.log(`WARNING: ${priceStr} is not a number`)
+      console.log(`WARNING: ${priceStr} is not a number`);
       price = -1;
     }
     return price;

@@ -2,7 +2,7 @@ import { Scraper } from "../scraper";
 import * as cheerio from "cheerio";
 
 export class Caskcartel extends Scraper {
-  _url = "https://caskcartel.com/collections/cask-cartel/whiskey_bourbon"
+  _url = "https://caskcartel.com/collections/cask-cartel/whiskey_bourbon";
   _website = "caskcartel";
   _productLinkBase = "https://caskcartel.com";
   _productsPerPage = 48;
@@ -26,7 +26,9 @@ export class Caskcartel extends Scraper {
       .filter((idx, elem) => !$(elem).html()?.includes("sold-out"))
       .map((idx, elem) => ({
         handle: $(elem).find("h5 a").attr("href"),
-        price: this._formatPrice($(elem).find(".price .money:first-child").text()),
+        price: this._formatPrice(
+          $(elem).find(".price .money:first-child").text()
+        ),
         title: $(elem).find("h5 a").text(),
       }))
       .toArray();

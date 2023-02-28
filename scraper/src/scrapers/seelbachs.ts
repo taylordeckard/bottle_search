@@ -2,7 +2,7 @@ import { Scraper } from "../scraper";
 import * as cheerio from "cheerio";
 
 export class Seelbachs extends Scraper {
-  _url = "https://seelbachs.com/collections/frontpage/whiskey"
+  _url = "https://seelbachs.com/collections/frontpage/whiskey";
   _website = "seelbachs";
   _productLinkBase = "https://seelbachs.com";
   _productsPerPage = 32;
@@ -23,11 +23,17 @@ export class Seelbachs extends Scraper {
   _convertTextToJson(response: string): any {
     const $ = cheerio.load(response);
     return $(".grid__item")
-      .filter((idx, elem) => !$(elem).html()?.includes("product-price__sold-out"))
-      .filter((idx, elem) => $(elem).find(".grid-view-item__title").text() !== "")
+      .filter(
+        (idx, elem) => !$(elem).html()?.includes("product-price__sold-out")
+      )
+      .filter(
+        (idx, elem) => $(elem).find(".grid-view-item__title").text() !== ""
+      )
       .map((idx, elem) => ({
         handle: $(elem).find(".grid-view-item__link").attr("href"),
-        price: this._formatPrice($(elem).find("span.product-price__price").text()),
+        price: this._formatPrice(
+          $(elem).find("span.product-price__price").text()
+        ),
         title: $(elem).find(".grid-view-item__title").text(),
       }))
       .toArray();
