@@ -1,14 +1,16 @@
-import { Caskers } from "./caskers";
 import { Caskcartel } from "./caskcartel";
+import { Caskers } from "./caskers";
+import { Flask } from './flask';
 import { Kegnbottle } from "./kegnbottle";
 import { Saratogawine } from "./saratogawine";
+import { Seelbachs } from "./seelbachs";
 import { Sharedpour } from "./sharedpour";
 import { Sipwhiskey } from "./sipwhiskey";
-import { Seelbachs } from "./seelbachs";
 
 export const scrapers = [
-  Caskers,
   Caskcartel,
+  Caskers,
+  Flask,
   Kegnbottle,
   Saratogawine,
   Seelbachs,
