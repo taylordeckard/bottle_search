@@ -1,4 +1,5 @@
 import { mongo } from "../db";
+import { safeSearch } from '../utils';
 
 export async function countBottles(
   parent: unknown,
@@ -10,10 +11,7 @@ export async function countBottles(
 ) {
   await mongo.connect();
   const query: any = {};
-  if (search) {
-    const safeSearch = search.replace(/[-/\\^$*+?.()|[\]{}]/g, "");
-    query.title = { $regex: new RegExp(`.*${safeSearch}.*`), $options: "i" };
-  }
+  safeSearch(query, search);
   return mongo.client
     .db("bottles")
     .collection("bottles")

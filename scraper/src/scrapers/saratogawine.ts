@@ -28,7 +28,7 @@ export class Saratogawine extends Scraper {
         price: this._formatPrice(
           $(elem).find(".price-line.bottle span.price").text()
         ),
-        title: $(elem).find(".product-name").text(),
+        title: $(elem).find(".image img").attr('alt'),
       }))
       .toArray();
   }
