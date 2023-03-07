@@ -2,17 +2,17 @@ import Image from "next/image";
 import styles from "./page.module.scss";
 import { gql } from "@apollo/client";
 import client from "../apollo-client";
-import ProductTable from './table';
-import Toolbar from './toolbar';
-import Search from './search';
-import Pager from './pager';
+import ProductTable from "./table";
+import Toolbar from "./toolbar";
+import Search from "./search";
+import Pager from "./pager";
 
 export const revalidate = 0;
 
 async function fetchData({
-  limit: limitStr = '50',
+  limit: limitStr = "50",
   search = "",
-  skip: skipStr = '0',
+  skip: skipStr = "0",
   sortDir = "asc",
   sortKey = "price",
 }: {
@@ -31,59 +31,65 @@ async function fetchData({
     skip = 50;
   }
   const result = {
-    bottles: (await client.query({
-      query: gql`
-      query getBottles(
-        $skip: Int
-        $limit: Int
-        $search: String
-        $sortKey: String
-        $sortDir: SortDir
-      ) {
-        bottles(
-          skip: $skip
-          limit: $limit
-          search: $search
-          sortKey: $sortKey
-          sortDir: $sortDir
-        ) {
-          _id
-          title
-          price
-          link
-          website
-          fresh
-        }
-      }
-      `,
-      variables: {
-        limit,
-        search,
-        skip,
-        sortDir,
-        sortKey,
-      },
-    }))?.data?.bottles,
-    count: (await client.query({
-      query: gql`
-      query countBottles($search: String) {
-        countBottles(search: $search)
-      }
-      `,
-      variables: { search },
-    })).data.countBottles,
-  }
+    bottles: (
+      await client.query({
+        query: gql`
+          query getBottles(
+            $skip: Int
+            $limit: Int
+            $search: String
+            $sortKey: String
+            $sortDir: SortDir
+          ) {
+            bottles(
+              skip: $skip
+              limit: $limit
+              search: $search
+              sortKey: $sortKey
+              sortDir: $sortDir
+            ) {
+              _id
+              title
+              price
+              link
+              website
+              fresh
+            }
+          }
+        `,
+        variables: {
+          limit,
+          search,
+          skip,
+          sortDir,
+          sortKey,
+        },
+      })
+    )?.data?.bottles,
+    count: (
+      await client.query({
+        query: gql`
+          query countBottles($search: String) {
+            countBottles(search: $search)
+          }
+        `,
+        variables: { search },
+      })
+    ).data.countBottles,
+  };
   return result;
 }
 
-export default async function Home({ searchParams }: {
+export default async function Home({
+  searchParams,
+}: {
   searchParams: {
     skip: string;
     limit: string;
     search: string;
-    sortColumn?: 'title' | 'price' | 'website';
-    sortDirection?: 'asc' | 'desc';
-  },
+    sortColumn?: "title" | "price" | "website";
+    sortDirection?: "asc" | "desc";
+  };
 }) {
   const { bottles, count } = await fetchData({
     limit: searchParams.limit,

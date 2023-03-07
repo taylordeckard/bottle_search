@@ -1,5 +1,5 @@
 import { mongo } from "../db";
-import { safeSearch } from '../utils';
+import { safeSearch } from "../utils";
 
 export async function getBottles(
   parent: unknown,

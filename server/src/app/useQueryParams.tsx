@@ -1,36 +1,39 @@
-import { usePathname, useRouter, useSearchParams  } from 'next/navigation';
-import { startTransition, useCallback } from 'react';
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import { startTransition, useCallback } from "react";
 
 export interface AppQueryParams {
   skip?: number;
   limit?: number;
-  sortColumn?: 'title' | 'website' | 'price';
-  sortDirection?: 'asc' | 'desc';
+  sortColumn?: "title" | "website" | "price";
+  sortDirection?: "asc" | "desc";
   search?: string;
 }
 
-export function useQueryParams () {
+export function useQueryParams() {
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
   const queryParams: AppQueryParams = {};
   searchParams.forEach((value, key) => {
     if (
-      ['skip', 'limit', 'sortColumn', 'sortDirection', 'search'].includes(key)
+      ["skip", "limit", "sortColumn", "sortDirection", "search"].includes(key)
     ) {
       let knownKey = key as keyof AppQueryParams;
-      if (key === 'sortColumn' && ['title', 'website', 'price'].includes(value)) {
-        const knownValue = value as 'title' | 'website' | 'price';
+      if (
+        key === "sortColumn" &&
+        ["title", "website", "price"].includes(value)
+      ) {
+        const knownValue = value as "title" | "website" | "price";
         queryParams.sortColumn = knownValue;
-      } else if (key === 'sortDirection' && ['asc', 'desc'].includes(value)) {
-        const knownValue = value as 'asc' | 'desc';
+      } else if (key === "sortDirection" && ["asc", "desc"].includes(value)) {
+        const knownValue = value as "asc" | "desc";
         queryParams.sortDirection = knownValue;
-      } else if (['skip', 'limit'].includes(key)) {
-        knownKey = knownKey as 'skip' | 'limit';
+      } else if (["skip", "limit"].includes(key)) {
+        knownKey = knownKey as "skip" | "limit";
         const num = Number(value);
         queryParams[knownKey] = isNaN(num) ? undefined : num;
       } else {
-        knownKey = knownKey as 'search';
+        knownKey = knownKey as "search";
         queryParams[knownKey] = value;
       }
     }
@@ -44,8 +47,8 @@ export function useQueryParams () {
         Object.entries(paramsToSet).forEach(([key, value]) => {
           params.set(key, value);
         });
-        router.replace(`${pathname}?${params.toString()}`)
+        router.replace(`${pathname}?${params.toString()}`);
       });
-    }
-  }
+    },
+  };
 }

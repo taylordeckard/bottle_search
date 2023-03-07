@@ -1,6 +1,6 @@
-import Title from './title';
+import Title from "./title";
 
-export default function Toolbar () {
+export default function Toolbar() {
   return (
     <>
       <Title />

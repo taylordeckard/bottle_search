@@ -1,32 +1,27 @@
 "use client";
-import TablePagination from '@mui/material/TablePagination';
-import { useQueryParams } from './useQueryParams';
+import TablePagination from "@mui/material/TablePagination";
+import { useQueryParams } from "./useQueryParams";
 
-
-export default function Pagination({
-  total,
-}: {
-  total: number;
-}) {
+export default function Pagination({ total }: { total: number }) {
   const { queryParams, setQueryParams } = useQueryParams();
   const { limit = 50, skip = 0 } = queryParams;
   const totalPages = Math.ceil(total / limit);
-  const page =  Math.floor(skip / limit);
+  const page = Math.floor(skip / limit);
   const handleChangePage = (
     event: React.MouseEvent<HTMLButtonElement> | null,
-    newPage: number,
+    newPage: number
   ) => {
     setQueryParams({
       skip: newPage * limit,
-    })
+    });
   };
 
   const handleChangeRowsPerPage = (
-    event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
+    event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
     setQueryParams({
       limit: Number(event.target.value),
-    })
+    });
   };
 
   return (

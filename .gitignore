@@ -1,3 +1,4 @@
 dist
 node_modules
 data
+scraper/run-dev.sh
