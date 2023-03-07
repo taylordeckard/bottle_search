@@ -1,0 +1,31 @@
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: bottle-search-scraper
+spec:
+  schedule: "0 10 * * 1" # Run on Mondays at 10:00 AM
+  jobTemplate:
+    spec:
+      template:
+        metadata:
+          {{- if .Values.annotations }}
+          annotations:
+            {{- range $key, $value := .Values.annotations }}
+            {{ $key }}: {{ $value | quote }}
+            {{- end }}
+          {{- end }}
+          labels:
+            app: bottle-search-scraper
+        spec:
+          serviceAccountName: warbler-k8s
+          imagePullSecrets:
+          - name: regcred
+          containers:
+          - name: bottle-search-scraper
+            image: warbler.docker-registry/bottle_search_scraper
+            imagePullPolicy: Always
+            command:
+            - "/bin/ash"
+            - "-c"
+            - "./run.sh"
+          restartPolicy: OnFailure

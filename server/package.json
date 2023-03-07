@@ -3,9 +3,11 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
+    "docker:build": "npm run build && docker build --platform linux/amd64 . -t warbler.docker-registry/bottle_search_server",
+    "docker:publish": "docker push warbler.docker-registry/bottle_search_server",
     "dev": "DB_HOST=localhost DB_USER=admin DB_PASSWORD=admin DB_PORT=27017 next dev",
     "build": "next build",
-    "start": "DB_HOST=localhost DB_USER=admin DB_PASSWORD=admin DB_PORT=27017 next start",
+    "start": "next start",
     "lint": "next lint",
     "prettier": "prettier --write ."
   },

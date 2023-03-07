@@ -4,6 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
+    "docker:build": "tsc && docker build --platform linux/amd64 . -t warbler.docker-registry/bottle_search_scraper",
+    "docker:publish": "docker push warbler.docker-registry/bottle_search_scraper",
     "test": "echo \"Error: no test specified\" && exit 1",
     "watch": "tsc -w",
     "start": "DB_HOST=localhost DB_USER=admin DB_PASSWORD=admin DB_PORT=27017 node ./dist/index.js",

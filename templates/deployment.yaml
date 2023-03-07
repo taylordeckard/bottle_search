@@ -1,0 +1,34 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: bottle-search
+  labels:
+    app: bottle-search
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: bottle-search
+  template:
+    metadata:
+      {{- if .Values.annotations }}
+      annotations:
+        {{- range $key, $value := .Values.annotations }}
+        {{ $key }}: {{ $value | quote }}
+        {{- end }}
+      {{- end }}
+      labels:
+        app: bottle-search
+    spec:
+      serviceAccountName: warbler-k8s
+      imagePullSecrets:
+      - name: regcred
+      containers:
+      - name: bottle-search
+        image: warbler.docker-registry/bottle_search_server
+        command: 
+        - "/bin/ash"
+        - "-c"
+        - "./run.sh"
+        ports:
+        - containerPort: 3000

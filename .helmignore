@@ -1,0 +1,9 @@
+.git
+data
+db
+scraper
+server
+.DS_Store
+.gitignore
+README.md
+docker-compose.yml
