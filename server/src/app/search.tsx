@@ -50,7 +50,9 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
   },
 }));
 
-export default function Search() {
+export default function Search({ className = "" }: {
+  className?: string;
+}) {
   const router = useRouter();
   const pathname = usePathname();
   const { queryParams, setQueryParams } = useQueryParams();
@@ -71,7 +73,7 @@ export default function Search() {
   }
   const debouncedSearch = useCallback(debounce(handleSearch), []);
   return (
-    <SearchWrapper>
+    <SearchWrapper className={className}>
       <SearchIconWrapper>
         <SearchIcon />
       </SearchIconWrapper>

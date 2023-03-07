@@ -102,7 +102,6 @@ export default async function Home({
     <main>
       <div className={styles.toolbar}>
         <Toolbar />
-        <Search />
       </div>
       <div className={styles.tableContainer}>
         <ProductTable products={bottles} />

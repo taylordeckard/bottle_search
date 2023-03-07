@@ -11,4 +11,10 @@
       color: #6c92b5;
     }
   }
+
+  .MuiTablePagination-selectLabel {
+    @media screen and (max-width: 400px) {
+      display: none;
+    }
+  }
 }
