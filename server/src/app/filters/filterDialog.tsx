@@ -38,6 +38,8 @@ export function FilterDialog({
   const { queryParams, setQueryParams } = useQueryParams();
   const [open, setOpen] = useState(openProp);
   const [newOn, setNewOn] = useState(queryParams.fresh);
+  const [rangeStart, setRangeStart] = useState(queryParams.rangeStart);
+  const [rangeEnd, setRangeEnd] = useState(queryParams.rangeEnd);
 
   useEffect(() => {
     setOpen(openProp);
@@ -55,7 +57,10 @@ export function FilterDialog({
 
   const handleSave = () => {
     setQueryParams({
+      rangeStart,
+      rangeEnd,
       fresh: newOn,
+      skip: 0,
     });
     setOpen(false);
     onClose?.();
@@ -98,7 +103,12 @@ export function FilterDialog({
             }
             label="New"
           />
-          <PriceRangeSelect />
+          <PriceRangeSelect
+            onChange={(value) => {
+              setRangeStart(value.rangeStart);
+              setRangeEnd(value.rangeEnd);
+            }}
+          />
         </FormGroup>
       </Container>
     </Dialog>

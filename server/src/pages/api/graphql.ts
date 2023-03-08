@@ -22,12 +22,19 @@ const typeDefs = gql`
     bottles(
       fresh: Boolean
       limit: Int
+      rangeStart: Float
+      rangeEnd: Float
       search: String
       skip: Int
       sortDir: SortDir
       sortKey: String
     ): [Bottle]
-    countBottles(fresh: Boolean, search: String): Int
+    countBottles(
+      fresh: Boolean
+      search: String
+      rangeStart: Float
+      rangeEnd: Float
+    ): Int
   }
 `;
 

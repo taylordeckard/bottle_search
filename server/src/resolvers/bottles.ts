@@ -1,11 +1,13 @@
 import { mongo } from "../db";
-import { safeSearch } from "../utils";
+import { safeSearch, addRangeToQuery } from "../utils";
 
 export async function getBottles(
   parent: unknown,
   {
     fresh = false,
     limit = 20,
+    rangeStart,
+    rangeEnd,
     search,
     skip = 0,
     sortDir = "asc",
@@ -13,6 +15,8 @@ export async function getBottles(
   }: {
     fresh?: boolean;
     limit?: number;
+    rangeStart?: number;
+    rangeEnd?: number;
     search?: string;
     skip?: number;
     sortDir?: "asc" | "desc";
@@ -22,6 +26,7 @@ export async function getBottles(
   await mongo.connect();
   const query: any = {};
   safeSearch(query, search);
+  addRangeToQuery(query, rangeStart, rangeEnd);
   if (fresh) {
     query["fresh"] = fresh;
   }

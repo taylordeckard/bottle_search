@@ -1,44 +1,74 @@
 "use client";
-import {
-  FormControl,
-  InputLabel,
-  ListItemText,
-  Checkbox,
-  MenuItem,
-  Select,
-} from "@mui/material";
-import { useEffect, useState } from "react";
+import { Box, TextField } from "@mui/material";
+import { ChangeEvent, useEffect, useState } from "react";
+import { useQueryParams } from "../useQueryParams";
 
-export function PriceRangeSelect() {
-  const priceRanges = [
-    { key: 0, label: "$0 - $50" },
-    { key: 1, label: "$51 - $100" },
-    { key: 2, label: "$101 - $200" },
-    { key: 3, label: "$201 - $500" },
-    { key: 4, label: "$501 - $1000" },
-    { key: 5, label: "$1001 - $2000" },
-    { key: 6, label: "$2001 - $5000" },
-    { key: 7, label: "$5001 - $10000" },
-    { key: 8, label: "$10000+" },
-  ];
+export function PriceRangeSelect({
+  onChange,
+}: {
+  onChange?: (value: { rangeStart?: number; rangeEnd?: number }) => void;
+}) {
+  const { queryParams } = useQueryParams();
+  const [rangeStart, setRangeStart] = useState<number | undefined>(
+    queryParams.rangeStart
+  );
+  const [rangeEnd, setRangeEnd] = useState<number | undefined>(
+    queryParams.rangeEnd
+  );
+
+  useEffect(() => {
+    onChange?.({ rangeStart, rangeEnd });
+  }, [rangeStart, rangeEnd]);
+
+  function handleChange(
+    setter: typeof setRangeEnd | typeof setRangeStart,
+    evt: ChangeEvent<HTMLInputElement>
+  ) {
+    setter(Number(evt.target.value));
+  }
+
+  function hasError() {
+    if (
+      typeof rangeStart !== "undefined" &&
+      typeof rangeEnd !== "undefined" &&
+      rangeStart >= rangeEnd
+    ) {
+      return true;
+    }
+    return false;
+  }
 
   return (
-    <FormControl fullWidth>
-      <InputLabel id="price-range">Price Range</InputLabel>
-      <Select
-        labelId="price-range-select-label"
-        id="price-range-select"
-        label="Price Range"
-        multiple
-        value={[]}
-      >
-        {priceRanges.map((pr) => (
-          <MenuItem key={pr.key} value={pr.key}>
-            <Checkbox />
-            <ListItemText primary={pr.label} />
-          </MenuItem>
-        ))}
-      </Select>
-    </FormControl>
+    <Box
+      component="form"
+      sx={{
+        "& .MuiTextField-root": { m: 1, width: "50ch" },
+      }}
+      noValidate
+      autoComplete="off"
+    >
+      <TextField
+        error={hasError()}
+        id="price-range-start"
+        label="Price Range Start"
+        type="number"
+        value={rangeStart}
+        onChange={handleChange.bind(null, setRangeStart)}
+        InputLabelProps={{
+          shrink: true,
+        }}
+      />
+      <TextField
+        error={hasError()}
+        id="price-range-end"
+        label="Price Range end"
+        type="number"
+        value={rangeEnd}
+        onChange={handleChange.bind(null, setRangeEnd)}
+        InputLabelProps={{
+          shrink: true,
+        }}
+      />
+    </Box>
   );
 }

@@ -4,6 +4,8 @@ import { startTransition, useCallback } from "react";
 export interface AppQueryParams {
   skip?: number;
   limit?: number;
+  rangeStart?: number;
+  rangeEnd?: number;
   sortColumn?: "title" | "website" | "price";
   sortDirection?: "asc" | "desc";
   search?: string;
@@ -20,6 +22,8 @@ export function useQueryParams() {
       [
         "fresh",
         "limit",
+        "rangeStart",
+        "rangeEnd",
         "search",
         "skip",
         "sortColumn",
@@ -36,8 +40,8 @@ export function useQueryParams() {
       } else if (key === "sortDirection" && ["asc", "desc"].includes(value)) {
         const knownValue = value as "asc" | "desc";
         queryParams.sortDirection = knownValue;
-      } else if (["skip", "limit"].includes(key)) {
-        knownKey = knownKey as "skip" | "limit";
+      } else if (["skip", "limit", "rangeStart", "rangeEnd"].includes(key)) {
+        knownKey = knownKey as "skip" | "limit" | "rangeStart" | "rangeEnd";
         const num = Number(value);
         queryParams[knownKey] = isNaN(num) ? undefined : num;
       } else if (key === "fresh") {
