@@ -55,7 +55,7 @@ export default function Search({ className = "" }: { className?: string }) {
   const pathname = usePathname();
   const { queryParams, setQueryParams } = useQueryParams();
   function debounce(
-    func: ChangeEventHandler<HTMLInputElement | HTMLTextAreaElement>,
+    func: ChangeEventHandler<HTMLInputElement | HTMLTextAreaElement>
   ): ChangeEventHandler<HTMLInputElement | HTMLTextAreaElement> {
     let timer: ReturnType<typeof setTimeout> | null;
     return function (...args: any) {

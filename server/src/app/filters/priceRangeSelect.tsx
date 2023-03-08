@@ -42,7 +42,8 @@ export function PriceRangeSelect({
     <Box
       component="form"
       sx={{
-        "& .MuiTextField-root": { m: 1, width: "50ch" },
+        margin: "auto",
+        "& .MuiTextField-root": { m: 1, width: "40vw" },
       }}
       noValidate
       autoComplete="off"

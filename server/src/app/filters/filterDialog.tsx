@@ -91,10 +91,26 @@ export function FilterDialog({
           </Button>
         </Toolbar>
       </AppBar>
-      <Container sx={{ marginTop: "20px" }}>
+      <Container
+        sx={{
+          marginTop: "20px",
+          marginLeft: "auto",
+          marginRight: "auto",
+        }}
+      >
         <FormGroup>
+          <PriceRangeSelect
+            onChange={(value) => {
+              setRangeStart(value.rangeStart);
+              setRangeEnd(value.rangeEnd);
+            }}
+          />
           <FormControlLabel
-            sx={{ marginBottom: "20px" }}
+            sx={{
+              marginTop: "20px",
+              marginLeft: "auto",
+              marginRight: "auto",
+            }}
             control={
               <Switch
                 checked={newOn}
@@ -102,12 +118,6 @@ export function FilterDialog({
               />
             }
             label="New"
-          />
-          <PriceRangeSelect
-            onChange={(value) => {
-              setRangeStart(value.rangeStart);
-              setRangeEnd(value.rangeEnd);
-            }}
           />
         </FormGroup>
       </Container>
