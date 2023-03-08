@@ -20,13 +20,14 @@ const typeDefs = gql`
 
   type Query {
     bottles(
-      skip: Int
+      fresh: Boolean
       limit: Int
       search: String
-      sortKey: String
+      skip: Int
       sortDir: SortDir
+      sortKey: String
     ): [Bottle]
-    countBottles(search: String): Int
+    countBottles(fresh: Boolean, search: String): Int
   }
 `;
 

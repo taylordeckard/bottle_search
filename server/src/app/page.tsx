@@ -10,12 +10,14 @@ import Pager from "./pager";
 export const revalidate = 0;
 
 async function fetchData({
+  fresh: freshStr = 'false',
   limit: limitStr = "50",
   search = "",
   skip: skipStr = "0",
   sortDir = "asc",
   sortKey = "price",
 }: {
+  fresh?: string;
   limit?: string;
   search?: string;
   skip?: string;
@@ -24,6 +26,7 @@ async function fetchData({
 } = {}) {
   let limit = Number(limitStr);
   let skip = Number(skipStr);
+  let fresh = freshStr === 'true' ? true : false;
   if (isNaN(limit) || limit > 100 || limit < 0) {
     limit = 50;
   }
@@ -35,13 +38,15 @@ async function fetchData({
       await client.query({
         query: gql`
           query getBottles(
-            $skip: Int
+            $fresh: Boolean
             $limit: Int
             $search: String
-            $sortKey: String
+            $skip: Int
             $sortDir: SortDir
+            $sortKey: String
           ) {
             bottles(
+              fresh: $fresh
               skip: $skip
               limit: $limit
               search: $search
@@ -58,6 +63,7 @@ async function fetchData({
           }
         `,
         variables: {
+          fresh,
           limit,
           search,
           skip,
@@ -69,13 +75,13 @@ async function fetchData({
     count: (
       await client.query({
         query: gql`
-          query countBottles($search: String) {
-            countBottles(search: $search)
+          query countBottles($fresh: Boolean, $search: String) {
+            countBottles(fresh: $fresh, search: $search)
           }
         `,
-        variables: { search },
+        variables: { fresh, search },
       })
-    ).data.countBottles,
+    ).data?.countBottles,
   };
   return result;
 }
@@ -84,14 +90,16 @@ export default async function Home({
   searchParams,
 }: {
   searchParams: {
-    skip: string;
-    limit: string;
-    search: string;
+    fresh?: string;
+    limit?: string;
+    search?: string;
+    skip?: string;
     sortColumn?: "title" | "price" | "website";
     sortDirection?: "asc" | "desc";
   };
 }) {
   const { bottles, count } = await fetchData({
+    fresh: searchParams.fresh,
     limit: searchParams.limit,
     skip: searchParams.skip,
     search: searchParams.search,

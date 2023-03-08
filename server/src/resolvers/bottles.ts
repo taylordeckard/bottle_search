@@ -4,22 +4,27 @@ import { safeSearch } from "../utils";
 export async function getBottles(
   parent: unknown,
   {
-    skip = 0,
+    fresh = false,
     limit = 20,
     search,
-    sortKey = "price",
+    skip = 0,
     sortDir = "asc",
+    sortKey = "price",
   }: {
-    skip?: number;
+    fresh?: boolean;
     limit?: number;
     search?: string;
-    sortKey?: string;
+    skip?: number;
     sortDir?: "asc" | "desc";
+    sortKey?: string;
   } = {}
 ) {
   await mongo.connect();
   const query: any = {};
   safeSearch(query, search);
+  if (fresh) {
+    query['fresh'] = fresh;
+  }
   return mongo.client
     .db("bottles")
     .collection("bottles")

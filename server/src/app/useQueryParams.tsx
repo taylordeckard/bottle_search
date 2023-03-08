@@ -7,6 +7,7 @@ export interface AppQueryParams {
   sortColumn?: "title" | "website" | "price";
   sortDirection?: "asc" | "desc";
   search?: string;
+  fresh?: boolean;
 }
 
 export function useQueryParams() {
@@ -16,7 +17,14 @@ export function useQueryParams() {
   const queryParams: AppQueryParams = {};
   searchParams.forEach((value, key) => {
     if (
-      ["skip", "limit", "sortColumn", "sortDirection", "search"].includes(key)
+      [
+        "fresh",
+        "limit",
+        "search",
+        "skip",
+        "sortColumn",
+        "sortDirection",
+      ].includes(key)
     ) {
       let knownKey = key as keyof AppQueryParams;
       if (
@@ -32,6 +40,9 @@ export function useQueryParams() {
         knownKey = knownKey as "skip" | "limit";
         const num = Number(value);
         queryParams[knownKey] = isNaN(num) ? undefined : num;
+      } else if (key === "fresh") {
+        knownKey = knownKey as "fresh";
+        queryParams[knownKey] = value === 'true' ? true : false;
       } else {
         knownKey = knownKey as "search";
         queryParams[knownKey] = value;
