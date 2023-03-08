@@ -18,7 +18,7 @@ export function PriceRangeSelect({
 
   useEffect(() => {
     onChange?.({ rangeStart, rangeEnd });
-  }, [rangeStart, rangeEnd]);
+  }, [onChange, rangeStart, rangeEnd]);
 
   function handleChange(
     setter: typeof setRangeEnd | typeof setRangeStart,

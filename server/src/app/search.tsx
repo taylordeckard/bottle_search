@@ -1,6 +1,6 @@
 "use client";
 import { usePathname, useRouter } from "next/navigation";
-import { startTransition, useCallback } from "react";
+import { ChangeEventHandler, startTransition, useCallback } from "react";
 import { styled, alpha } from "@mui/material/styles";
 import InputBase from "@mui/material/InputBase";
 import SearchIcon from "@mui/icons-material/Search";
@@ -54,7 +54,9 @@ export default function Search({ className = "" }: { className?: string }) {
   const router = useRouter();
   const pathname = usePathname();
   const { queryParams, setQueryParams } = useQueryParams();
-  function debounce(func: Function) {
+  function debounce(
+    func: ChangeEventHandler<HTMLInputElement | HTMLTextAreaElement>,
+  ): ChangeEventHandler<HTMLInputElement | HTMLTextAreaElement> {
     let timer: ReturnType<typeof setTimeout> | null;
     return function (...args: any) {
       if (timer) clearTimeout(timer);
@@ -69,6 +71,7 @@ export default function Search({ className = "" }: { className?: string }) {
       search: event.target.value,
     });
   }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   const debouncedSearch = useCallback(debounce(handleSearch), []);
   return (
     <SearchWrapper className={className}>
