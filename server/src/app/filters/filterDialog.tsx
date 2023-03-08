@@ -1,4 +1,4 @@
-"use client"
+"use client";
 import {
   AppBar,
   Button,
@@ -12,23 +12,26 @@ import {
   Switch,
   Toolbar,
   Typography,
-} from '@mui/material'
-import { Close as CloseIcon } from '@mui/icons-material';
-import { TransitionProps } from '@mui/material/transitions';
-import { useEffect, useState, forwardRef, ReactElement, Ref } from 'react';
-import { PriceRangeSelect } from './priceRangeSelect';
-import { useQueryParams } from '../useQueryParams';
+} from "@mui/material";
+import { Close as CloseIcon } from "@mui/icons-material";
+import { TransitionProps } from "@mui/material/transitions";
+import { useEffect, useState, forwardRef, ReactElement, Ref } from "react";
+import { PriceRangeSelect } from "./priceRangeSelect";
+import { useQueryParams } from "../useQueryParams";
 
 const Transition = forwardRef(function Transition(
   props: TransitionProps & {
     children: ReactElement;
   },
-  ref: Ref<unknown>,
+  ref: Ref<unknown>
 ) {
   return <Slide direction="up" ref={ref} {...props} />;
 });
 
-export function FilterDialog({ openProp, onClose }: {
+export function FilterDialog({
+  openProp,
+  onClose,
+}: {
   openProp: boolean;
   onClose?: () => void;
 }) {
@@ -38,7 +41,7 @@ export function FilterDialog({ openProp, onClose }: {
 
   useEffect(() => {
     setOpen(openProp);
-  }, [openProp])
+  }, [openProp]);
 
   const resetState = () => {
     setNewOn(queryParams.fresh);
@@ -65,7 +68,7 @@ export function FilterDialog({ openProp, onClose }: {
       onClose={handleClose}
       TransitionComponent={Transition}
     >
-      <AppBar sx={{ position: 'relative' }}>
+      <AppBar sx={{ position: "relative" }}>
         <Toolbar>
           <IconButton
             edge="start"
@@ -83,11 +86,18 @@ export function FilterDialog({ openProp, onClose }: {
           </Button>
         </Toolbar>
       </AppBar>
-      <Container sx={{ marginTop: '20px' }}>
+      <Container sx={{ marginTop: "20px" }}>
         <FormGroup>
-          <FormControlLabel sx={{ marginBottom: '20px' }} control={
-            <Switch checked={newOn} onChange={(evt) => setNewOn(evt.target.checked)} />
-          } label="New" />
+          <FormControlLabel
+            sx={{ marginBottom: "20px" }}
+            control={
+              <Switch
+                checked={newOn}
+                onChange={(evt) => setNewOn(evt.target.checked)}
+              />
+            }
+            label="New"
+          />
           <PriceRangeSelect />
         </FormGroup>
       </Container>

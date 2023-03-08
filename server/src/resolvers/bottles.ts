@@ -23,7 +23,7 @@ export async function getBottles(
   const query: any = {};
   safeSearch(query, search);
   if (fresh) {
-    query['fresh'] = fresh;
+    query["fresh"] = fresh;
   }
   return mongo.client
     .db("bottles")

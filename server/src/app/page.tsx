@@ -10,7 +10,7 @@ import Pager from "./pager";
 export const revalidate = 0;
 
 async function fetchData({
-  fresh: freshStr = 'false',
+  fresh: freshStr = "false",
   limit: limitStr = "50",
   search = "",
   skip: skipStr = "0",
@@ -26,7 +26,7 @@ async function fetchData({
 } = {}) {
   let limit = Number(limitStr);
   let skip = Number(skipStr);
-  let fresh = freshStr === 'true' ? true : false;
+  let fresh = freshStr === "true" ? true : false;
   if (isNaN(limit) || limit > 100 || limit < 0) {
     limit = 50;
   }

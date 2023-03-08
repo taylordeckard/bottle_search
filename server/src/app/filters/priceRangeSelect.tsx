@@ -1,4 +1,4 @@
-"use client"
+"use client";
 import {
   FormControl,
   InputLabel,
@@ -6,8 +6,8 @@ import {
   Checkbox,
   MenuItem,
   Select,
-} from '@mui/material'
-import { useEffect, useState } from 'react';
+} from "@mui/material";
+import { useEffect, useState } from "react";
 
 export function PriceRangeSelect() {
   const priceRanges = [
@@ -20,7 +20,7 @@ export function PriceRangeSelect() {
     { key: 6, label: "$2001 - $5000" },
     { key: 7, label: "$5001 - $10000" },
     { key: 8, label: "$10000+" },
-  ]
+  ];
 
   return (
     <FormControl fullWidth>

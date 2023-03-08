@@ -42,7 +42,7 @@ export function useQueryParams() {
         queryParams[knownKey] = isNaN(num) ? undefined : num;
       } else if (key === "fresh") {
         knownKey = knownKey as "fresh";
-        queryParams[knownKey] = value === 'true' ? true : false;
+        queryParams[knownKey] = value === "true" ? true : false;
       } else {
         knownKey = knownKey as "search";
         queryParams[knownKey] = value;

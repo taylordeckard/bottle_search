@@ -50,9 +50,7 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
   },
 }));
 
-export default function Search({ className = "" }: {
-  className?: string;
-}) {
+export default function Search({ className = "" }: { className?: string }) {
   const router = useRouter();
   const pathname = usePathname();
   const { queryParams, setQueryParams } = useQueryParams();
