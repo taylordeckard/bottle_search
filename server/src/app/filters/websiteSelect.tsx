@@ -11,7 +11,7 @@ import {
   SelectChangeEvent,
 } from '@mui/material';
 import { useQueryParams } from '../useQueryParams';
-import { websites } from '../../websites';
+import { websites, Website } from '../../websites';
 
 const ITEM_HEIGHT = 48;
 const ITEM_PADDING_TOP = 8;
@@ -36,11 +36,11 @@ function getStyles(name: string, website: string[], theme: Theme) {
 export function WebsiteSelect({
   onChange,
 }: {
-  onChange?: (value: string[]) => void;
+  onChange?: (value: Website[]) => void;
 }) {
   const theme = useTheme();
   const { queryParams } = useQueryParams();
-  const [selection, setSelection] = useState<string[]>(queryParams.website ?? []);
+  const [selection, setSelection] = useState<Website[]>(queryParams.website ?? []);
 
   useEffect(() => {
     onChange?.(selection)
@@ -52,7 +52,7 @@ export function WebsiteSelect({
     } = event;
     setSelection(
       // On autofill we get a stringified value.
-      typeof value === 'string' ? value.split(',') : value,
+      typeof value === 'string' ? (value.split(',') as Website[]) : value,
     );
   };
 

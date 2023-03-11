@@ -19,6 +19,7 @@ import { useEffect, useState, forwardRef, ReactElement, Ref } from "react";
 import { PriceRangeInput } from "./priceRangeInput";
 import { WebsiteSelect } from './websiteSelect';
 import { useQueryParams } from "../useQueryParams";
+import { Website } from '../../websites';
 
 const Transition = forwardRef(function Transition(
   props: TransitionProps & {
