@@ -1,6 +1,6 @@
 "use client";
 import { usePathname, useRouter } from "next/navigation";
-import { ChangeEventHandler, startTransition, useCallback } from "react";
+import { ChangeEventHandler, startTransition, useCallback, useEffect, useState } from "react";
 import { styled, alpha } from "@mui/material/styles";
 import InputBase from "@mui/material/InputBase";
 import SearchIcon from "@mui/icons-material/Search";
@@ -54,25 +54,33 @@ export default function Search({ className = "" }: { className?: string }) {
   const router = useRouter();
   const pathname = usePathname();
   const { queryParams, setQueryParams } = useQueryParams();
-  function debounce(
-    func: ChangeEventHandler<HTMLInputElement | HTMLTextAreaElement>
+  const [search, setSearch] = useState(queryParams.search ?? '');
+  function debounceSearch(
+    func: (val: string) => void,
   ): ChangeEventHandler<HTMLInputElement | HTMLTextAreaElement> {
     let timer: ReturnType<typeof setTimeout> | null;
-    return function (...args: any) {
+    return function (event: React.ChangeEvent<HTMLInputElement>) {
+      let value = event.target.value;
+      setSearch(value);
       if (timer) clearTimeout(timer);
       timer = setTimeout(() => {
         timer = null;
-        func.apply(null, args);
+        func.apply(null, [value]);
       }, 500);
     };
   }
-  function handleSearch(event: React.ChangeEvent<HTMLInputElement>) {
+  function handleSearch(val: string) {
     setQueryParams({
-      search: event.target.value,
+      search: val,
     });
   }
+
+  useEffect(() => {
+    setSearch(queryParams.search ?? '');
+  }, [queryParams.search]);
+
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  const debouncedSearch = useCallback(debounce(handleSearch), []);
+  const debouncedSearch = useCallback(debounceSearch(handleSearch), []);
   return (
     <SearchWrapper className={className}>
       <SearchIconWrapper>
@@ -80,8 +88,11 @@ export default function Search({ className = "" }: { className?: string }) {
       </SearchIconWrapper>
       <StyledInputBase
         placeholder="Search…"
-        inputProps={{ "aria-label": "search" }}
+        inputProps={{
+          "aria-label": "search",
+        }}
         onChange={debouncedSearch}
+        value={search}
       />
     </SearchWrapper>
   );

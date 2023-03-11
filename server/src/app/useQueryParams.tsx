@@ -56,6 +56,11 @@ export function useQueryParams() {
 
   return {
     queryParams,
+    clearQueryParams: () => {
+      startTransition(() => {
+        router.replace(`${pathname}`);
+      });
+    },
     setQueryParams: (paramsToSet: AppQueryParams) => {
       startTransition(() => {
         const params = new URLSearchParams(searchParams);

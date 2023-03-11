@@ -35,7 +35,7 @@ export function FilterDialog({
   openProp: boolean;
   onClose?: () => void;
 }) {
-  const { queryParams, setQueryParams } = useQueryParams();
+  const { queryParams, clearQueryParams, setQueryParams } = useQueryParams();
   const [open, setOpen] = useState(openProp);
   const [newOn, setNewOn] = useState(queryParams.fresh);
   const [rangeStart, setRangeStart] = useState(queryParams.rangeStart);
@@ -51,6 +51,12 @@ export function FilterDialog({
 
   const handleClose = () => {
     resetState();
+    setOpen(false);
+    onClose?.();
+  };
+
+  const handleClear = () => {
+    clearQueryParams();
     setOpen(false);
     onClose?.();
   };
@@ -86,6 +92,9 @@ export function FilterDialog({
           <Typography sx={{ ml: 2, flex: 1 }} variant="h6" component="div">
             Filters
           </Typography>
+          <Button autoFocus color="warning" onClick={handleClear}>
+            Clear
+          </Button>
           <Button autoFocus color="inherit" onClick={handleSave}>
             Save
           </Button>
@@ -93,6 +102,7 @@ export function FilterDialog({
       </AppBar>
       <Container
         sx={{
+          maxWidth: "unset !important",
           marginTop: "20px",
           marginLeft: "auto",
           marginRight: "auto",
