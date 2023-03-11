@@ -14,8 +14,11 @@ const boolTransformer = (value?: string) => {
   return value === "true" ? true : false;
 };
 
-const websiteTransformer = (value?: string): Website[] => {
-  return value?.split(',') as Website[];
+const websiteTransformer = (value?: string): Website[] | undefined => {
+  if (value) {
+    return value?.split(',') as Website[];
+  }
+  return undefined;
 };
 
 const rangeTransformer = (
@@ -64,7 +67,13 @@ export const zAppQueryParams = z.object({
   sortDirection: z.enum(['asc', 'desc']).optional(),
   search: z.string().optional(),
   fresh: z.string().transform(boolTransformer).pipe(z.boolean()).optional(),
-  website: z.string().transform(websiteTransformer).pipe(z.array(zWebsites)).optional(),
-}); 
+  website: z.string().optional().transform(websiteTransformer).pipe(z.array(zWebsites).optional()),
+}).refine(
+  (params) => (params.rangeStart ?? 0) <= (params.rangeEnd ?? 0),
+  {
+    message: 'Parameter `rangeStart` exceeds `rangeEnd`',
+    path: ['rangeStart'],
+  },
+); 
 
 export type AppQueryParams = z.TypeOf<typeof zAppQueryParams>;

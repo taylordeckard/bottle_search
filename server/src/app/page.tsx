@@ -33,15 +33,19 @@ async function fetchData(params: AppStringQueryParams = {}) {
     sortColumn: "price",
   }
   let parsed = zAppQueryParams.safeParse(params);
+  let error = false;
   if (!parsed.success) {
     parsed.error.issues.forEach((iss) => {
       const key = iss.path[0] as keyof AppStringQueryParams;
       delete params[key];
       parsed = zAppQueryParams.safeParse(params);
       if (!parsed.success) {
-        return { bottles: [], count: 0 };
+        error = true;
       }
     });
+  }
+  if (error) {
+    return { bottles: [], count: 0 };
   }
 
   const validated = (parsed as SafeParseSuccess<AppQueryParams>).data;
