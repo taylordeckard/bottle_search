@@ -1,5 +1,6 @@
 import { mongo } from "../db";
-import { safeSearch, addRangeToQuery } from "../utils";
+import { safeSearch, addRangeToQuery, addWebsite } from "../utils";
+import { Website } from '../websites';
 
 export async function getBottles(
   parent: unknown,
@@ -10,8 +11,9 @@ export async function getBottles(
     rangeEnd,
     search,
     skip = 0,
-    sortDir = "asc",
-    sortKey = "price",
+    sortDirection = "asc",
+    sortColumn = "price",
+    website,
   }: {
     fresh?: boolean;
     limit?: number;
@@ -19,14 +21,16 @@ export async function getBottles(
     rangeEnd?: number;
     search?: string;
     skip?: number;
-    sortDir?: "asc" | "desc";
-    sortKey?: string;
+    sortDirection?: "asc" | "desc";
+    sortColumn?: string;
+    website?: Website[];
   } = {}
 ) {
   await mongo.connect();
   const query: any = {};
   safeSearch(query, search);
   addRangeToQuery(query, rangeStart, rangeEnd);
+  addWebsite(query, website);
   if (fresh) {
     query["fresh"] = fresh;
   }
@@ -34,7 +38,7 @@ export async function getBottles(
     .db("bottles")
     .collection("bottles")
     .find(query)
-    .sort(sortKey, sortDir === "asc" ? 1 : -1)
+    .sort(sortColumn, sortDirection === "asc" ? 1 : -1)
     .skip(skip)
     .limit(limit)
     .toArray();

@@ -1,3 +1,5 @@
+import { Website } from './websites';
+
 export function safeSearch(query: any, search?: string) {
   if (search) {
     const safeSearch = search.replace(/[-/\\^$*+?.()|[\]{}]/g, "\\$&");
@@ -26,5 +28,11 @@ export function addRangeToQuery(
   }
   if (start !== 0 || end !== UPPER_RANGE_LIMIT) {
     query["price"] = { $gte: start, $lt: end };
+  }
+}
+
+export function addWebsite (query: any, value?: Website[]) {
+  if (value) {
+    query['website'] = { $in: value };
   }
 }

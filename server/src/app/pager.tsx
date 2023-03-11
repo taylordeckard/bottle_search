@@ -21,6 +21,7 @@ export default function Pagination({ total }: { total: number }) {
   ) => {
     setQueryParams({
       limit: Number(event.target.value),
+      skip: 0,
     });
   };
 

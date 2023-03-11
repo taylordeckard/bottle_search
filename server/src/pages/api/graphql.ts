@@ -2,8 +2,21 @@ import { ApolloServer } from "@apollo/server";
 import { startServerAndCreateNextHandler } from "@as-integrations/next";
 import { gql } from "graphql-tag";
 import { resolvers } from "../../resolvers";
+import { websites } from '../../websites';
+
+function websitesToGql () {
+  let str = '';
+  websites.forEach(w => {
+    str += `${w}\n`;
+  });
+  return str;
+}
 
 const typeDefs = gql`
+  enum Website {
+    ${websitesToGql()}
+  }
+
   type Bottle {
     _id: String
     title: String
@@ -13,7 +26,7 @@ const typeDefs = gql`
     fresh: Boolean
   }
 
-  enum SortDir {
+  enum SortDirection {
     asc
     desc
   }
@@ -26,14 +39,16 @@ const typeDefs = gql`
       rangeEnd: Float
       search: String
       skip: Int
-      sortDir: SortDir
-      sortKey: String
+      sortDirection: SortDirection
+      sortColumn: String
+      website: [Website]
     ): [Bottle]
     countBottles(
       fresh: Boolean
       search: String
       rangeStart: Float
       rangeEnd: Float
+      website: [Website]
     ): Int
   }
 `;

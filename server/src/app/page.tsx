@@ -6,6 +6,8 @@ import ProductTable from "./table";
 import Toolbar from "./toolbar";
 import Search from "./search";
 import Pager from "./pager";
+import { AppQueryParams, zAppQueryParams } from './types';
+import { SafeParseSuccess } from 'zod';
 
 export interface AppStringQueryParams {
   fresh?: string;
@@ -14,44 +16,57 @@ export interface AppStringQueryParams {
   rangeEnd?: string;
   search?: string;
   skip?: string;
-  sortDir?: string;
-  sortKey?: string;
+  sortColumn?: string;
+  sortDirection?: string;
+  website?: string;
 }
 
 export const revalidate = 0;
 
-const UPPER_RANGE_LIMIT = 100000;
+async function fetchData(params: AppStringQueryParams = {}) {
+  const defaults = {
+    fresh: false,
+    limit: 50,
+    search: "",
+    skip: 0,
+    sortDirection: "asc",
+    sortColumn: "price",
+  }
+  let parsed = zAppQueryParams.safeParse(params);
+  if (!parsed.success) {
+    parsed.error.issues.forEach((iss) => {
+      const key = iss.path[0] as keyof AppStringQueryParams;
+      delete params[key];
+      parsed = zAppQueryParams.safeParse(params);
+      if (!parsed.success) {
+        return { bottles: [], count: 0 };
+      }
+    });
+  }
 
-async function fetchData({
-  fresh: freshStr = "false",
-  limit: limitStr = "50",
-  rangeStart: rangeStartStr,
-  rangeEnd: rangeEndStr,
-  search = "",
-  skip: skipStr = "0",
-  sortDir = "asc",
-  sortKey = "price",
-}: AppStringQueryParams = {}) {
-  let limit = Number(limitStr);
-  let skip = Number(skipStr);
-  let rangeStart: number | undefined = Number(rangeStartStr);
-  let rangeEnd: number | undefined = Number(rangeEndStr);
-  let fresh = freshStr === "true" ? true : false;
-  if (isNaN(limit) || limit > 100 || limit < 0) {
-    limit = 50;
-  }
-  if (isNaN(skip) || skip < 0) {
-    skip = 0;
-  }
-  if (isNaN(rangeStart) || rangeStart < 0) {
-    rangeStart = undefined;
-  }
-  if (isNaN(rangeEnd) || rangeEnd > UPPER_RANGE_LIMIT) {
-    rangeEnd = undefined;
-  }
+  const validated = (parsed as SafeParseSuccess<AppQueryParams>).data;
+  type ValuesType<T> = T[keyof T];
+  // Remove all undefined values from the validated parameters object
+  // so defaults can be set
+  Object.entries(validated).forEach(([key, val]) => {
+    if (typeof val === 'undefined') {
+      delete (validated as { [key: string]: ValuesType<AppQueryParams> })[key];
+    }
+  });
+
+  const variables = Object.assign({}, defaults, validated);
+  const {
+    fresh,
+    rangeStart,
+    rangeEnd,
+    search,
+    website,
+  } = variables;
+
   const result = {
     bottles: (
       await client.query({
+        variables,
         query: gql`
           query getBottles(
             $fresh: Boolean
@@ -60,8 +75,9 @@ async function fetchData({
             $rangeEnd: Float
             $search: String
             $skip: Int
-            $sortDir: SortDir
-            $sortKey: String
+            $sortDirection: SortDirection
+            $sortColumn: String
+            $website: [Website]
           ) {
             bottles(
               fresh: $fresh
@@ -70,8 +86,9 @@ async function fetchData({
               rangeStart: $rangeStart
               rangeEnd: $rangeEnd
               search: $search
-              sortKey: $sortKey
-              sortDir: $sortDir
+              sortColumn: $sortColumn
+              sortDirection: $sortDirection
+              website: $website
             ) {
               _id
               title
@@ -82,41 +99,34 @@ async function fetchData({
             }
           }
         `,
-        variables: {
-          fresh,
-          limit,
-          rangeStart,
-          rangeEnd,
-          search,
-          skip,
-          sortDir,
-          sortKey,
-        },
       })
     )?.data?.bottles,
     count: (
       await client.query({
+        variables: {
+          fresh,
+          rangeStart,
+          rangeEnd,
+          search,
+          website,
+        },
         query: gql`
           query countBottles(
             $fresh: Boolean
             $rangeStart: Float
             $rangeEnd: Float
             $search: String
+            $website: [Website]
           ) {
             countBottles(
               fresh: $fresh
               rangeStart: $rangeStart
               rangeEnd: $rangeEnd
               search: $search
+              website: $website
             )
           }
         `,
-        variables: {
-          fresh,
-          rangeStart,
-          rangeEnd,
-          search,
-        },
       })
     ).data?.countBottles,
   };
@@ -135,6 +145,7 @@ export default async function Home({
     skip?: string;
     sortColumn?: "title" | "price" | "website";
     sortDirection?: "asc" | "desc";
+    website?: string,
   };
 }) {
   const { bottles, count } = await fetchData({
@@ -144,8 +155,9 @@ export default async function Home({
     rangeEnd: searchParams.rangeEnd,
     skip: searchParams.skip,
     search: searchParams.search,
-    sortKey: searchParams.sortColumn,
-    sortDir: searchParams.sortDirection,
+    sortColumn: searchParams.sortColumn,
+    sortDirection: searchParams.sortDirection,
+    website: searchParams.website,
   });
   return (
     <main>

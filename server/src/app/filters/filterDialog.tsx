@@ -16,7 +16,8 @@ import {
 import { Close as CloseIcon } from "@mui/icons-material";
 import { TransitionProps } from "@mui/material/transitions";
 import { useEffect, useState, forwardRef, ReactElement, Ref } from "react";
-import { PriceRangeSelect } from "./priceRangeSelect";
+import { PriceRangeInput } from "./priceRangeInput";
+import { WebsiteSelect } from './websiteSelect';
 import { useQueryParams } from "../useQueryParams";
 
 const Transition = forwardRef(function Transition(
@@ -40,6 +41,7 @@ export function FilterDialog({
   const [newOn, setNewOn] = useState(queryParams.fresh);
   const [rangeStart, setRangeStart] = useState(queryParams.rangeStart);
   const [rangeEnd, setRangeEnd] = useState(queryParams.rangeEnd);
+  const [website, setWebsite] = useState(queryParams.website);
 
   useEffect(() => {
     setOpen(openProp);
@@ -65,6 +67,7 @@ export function FilterDialog({
     setQueryParams({
       rangeStart,
       rangeEnd,
+      website,
       fresh: newOn,
       skip: 0,
     });
@@ -109,11 +112,13 @@ export function FilterDialog({
         }}
       >
         <FormGroup>
-          <PriceRangeSelect
+          <PriceRangeInput
             onChange={(value) => {
               setRangeStart(value.rangeStart);
               setRangeEnd(value.rangeEnd);
             }}
+          />
+          <WebsiteSelect onChange={(value) => setWebsite(value)}
           />
           <FormControlLabel
             sx={{

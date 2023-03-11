@@ -3,7 +3,7 @@ import { Box, TextField } from "@mui/material";
 import { ChangeEvent, useEffect, useState } from "react";
 import { useQueryParams } from "../useQueryParams";
 
-export function PriceRangeSelect({
+export function PriceRangeInput({
   onChange,
 }: {
   onChange?: (value: { rangeStart?: number; rangeEnd?: number }) => void;

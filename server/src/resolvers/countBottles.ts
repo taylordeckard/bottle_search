@@ -1,5 +1,6 @@
 import { mongo } from "../db";
-import { addRangeToQuery, safeSearch } from "../utils";
+import { addRangeToQuery, addWebsite, safeSearch } from "../utils";
+import { Website } from '../websites';
 
 export async function countBottles(
   parent: unknown,
@@ -8,17 +9,20 @@ export async function countBottles(
     rangeStart,
     rangeEnd,
     search,
+    website,
   }: {
     fresh?: boolean;
     rangeStart?: number;
     rangeEnd?: number;
     search?: string;
+    website?: Website[],
   } = {}
 ) {
   await mongo.connect();
   const query: any = {};
   safeSearch(query, search);
   addRangeToQuery(query, rangeStart, rangeEnd);
+  addWebsite(query, website);
   if (fresh) {
     query["fresh"] = fresh;
   }
